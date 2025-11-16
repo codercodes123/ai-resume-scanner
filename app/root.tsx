@@ -10,7 +10,7 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 import {usePuterStore} from "~/lib/putter";
-import {useEffect} from "react";
+import React, {useEffect} from "react";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -75,9 +75,11 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
       error.status === 404
         ? "The requested page could not be found."
         : error.statusText || details;
-  } else if (import.meta.env.DEV && error && error instanceof Error) {
-    details = error.message;
-    stack = error.stack;
+  } else { // @ts-ignore
+      if (import.meta.env.DEV && error && error instanceof Error) {
+          details = error.message;
+          stack = error.stack;
+        }
   }
 
   return (

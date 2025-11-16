@@ -59,81 +59,81 @@ export const resumes: Resume[] = [
             skills: { score: 90, tips: [] },
         },
     },
-    {
-        id: "5",
-        companyName: "IBM",
-        jobTitle: "Machine Learning Engineer",
-        imagePath: "/images/resume_05.png",
-        resumePath: "/resumes/resume-5.pdf",
-        feedback: {
-            overallScore: 82,
-            ATS: { score: 92, tips: [] },
-            toneAndStyle: { score: 85, tips: [] },
-            content: { score: 79, tips: [] },
-            structure: { score: 87, tips: [] },
-            skills: { score: 94, tips: [] },
-        },
-    },
-    {
-        id: "6",
-        companyName: "Tesla",
-        jobTitle: "Embedded Systems Engineer",
-        imagePath: "/images/resume_05.svg",
-        resumePath: "/resumes/resume-6.pdf",
-        feedback: {
-            overallScore: 74,
-            ATS: { score: 86, tips: [] },
-            toneAndStyle: { score: 80, tips: [] },
-            content: { score: 70, tips: [] },
-            structure: { score: 85, tips: [] },
-            skills: { score: 88, tips: [] },
-        },
-    },
-    {
-        id: "7",
-        companyName: "Meta",
-        jobTitle: "Backend Engineer",
-        imagePath: "/images/resume_07.png",
-        resumePath: "/resumes/resume-7.pdf",
-        feedback: {
-            overallScore: 79,
-            ATS: { score: 90, tips: [] },
-            toneAndStyle: { score: 82, tips: [] },
-            content: { score: 74, tips: [] },
-            structure: { score: 80, tips: [] },
-            skills: { score: 93, tips: [] },
-        },
-    },
-    {
-        id: "8",
-        companyName: "SpaceX",
-        jobTitle: "Systems Engineer",
-        imagePath: "/images/resume_08.png",
-        resumePath: "/resumes/resume-8.pdf",
-        feedback: {
-            overallScore: 81,
-            ATS: { score: 88, tips: [] },
-            toneAndStyle: { score: 84, tips: [] },
-            content: { score: 79, tips: [] },
-            structure: { score: 89, tips: [] },
-            skills: { score: 90, tips: [] },
-        },
-    },
-    {
-        id: "9",
-        companyName: "Amazon",
-        jobTitle: "DevOps Engineer",
-        imagePath: "/images/resume_09.png",
-        resumePath: "/resumes/resume-9.pdf",
-        feedback: {
-            overallScore: 75,
-            ATS: { score: 93, tips: [] },
-            toneAndStyle: { score: 80, tips: [] },
-            content: { score: 72, tips: [] },
-            structure: { score: 85, tips: [] },
-            skills: { score: 92, tips: [] },
-        },
-    },
+    // {
+    //     id: "5",
+    //     companyName: "IBM",
+    //     jobTitle: "Machine Learning Engineer",
+    //     imagePath: "/images/resume_05.png",
+    //     resumePath: "/resumes/resume-5.pdf",
+    //     feedback: {
+    //         overallScore: 82,
+    //         ATS: { score: 92, tips: [] },
+    //         toneAndStyle: { score: 85, tips: [] },
+    //         content: { score: 79, tips: [] },
+    //         structure: { score: 87, tips: [] },
+    //         skills: { score: 94, tips: [] },
+    //     },
+    // },
+    // {
+    //     id: "6",
+    //     companyName: "Tesla",
+    //     jobTitle: "Embedded Systems Engineer",
+    //     imagePath: "/images/resume_05.svg",
+    //     resumePath: "/resumes/resume-6.pdf",
+    //     feedback: {
+    //         overallScore: 74,
+    //         ATS: { score: 86, tips: [] },
+    //         toneAndStyle: { score: 80, tips: [] },
+    //         content: { score: 70, tips: [] },
+    //         structure: { score: 85, tips: [] },
+    //         skills: { score: 88, tips: [] },
+    //     },
+    // },
+    // {
+    //     id: "7",
+    //     companyName: "Meta",
+    //     jobTitle: "Backend Engineer",
+    //     imagePath: "/images/resume_07.png",
+    //     resumePath: "/resumes/resume-7.pdf",
+    //     feedback: {
+    //         overallScore: 79,
+    //         ATS: { score: 90, tips: [] },
+    //         toneAndStyle: { score: 82, tips: [] },
+    //         content: { score: 74, tips: [] },
+    //         structure: { score: 80, tips: [] },
+    //         skills: { score: 93, tips: [] },
+    //     },
+    // },
+    // {
+    //     id: "8",
+    //     companyName: "SpaceX",
+    //     jobTitle: "Systems Engineer",
+    //     imagePath: "/images/resume_08.png",
+    //     resumePath: "/resumes/resume-8.pdf",
+    //     feedback: {
+    //         overallScore: 81,
+    //         ATS: { score: 88, tips: [] },
+    //         toneAndStyle: { score: 84, tips: [] },
+    //         content: { score: 79, tips: [] },
+    //         structure: { score: 89, tips: [] },
+    //         skills: { score: 90, tips: [] },
+    //     },
+    // },
+    // {
+    //     id: "9",
+    //     companyName: "Amazon",
+    //     jobTitle: "DevOps Engineer",
+    //     imagePath: "/images/resume_09.png",
+    //     resumePath: "/resumes/resume-9.pdf",
+    //     feedback: {
+    //         overallScore: 75,
+    //         ATS: { score: 93, tips: [] },
+    //         toneAndStyle: { score: 80, tips: [] },
+    //         content: { score: 72, tips: [] },
+    //         structure: { score: 85, tips: [] },
+    //         skills: { score: 92, tips: [] },
+    //     },
+    // },
 ];
 
 export const AIResponseFormat = `
@@ -183,11 +183,11 @@ export const AIResponseFormat = `
 export const prepareInstructions = ({
                                         jobTitle,
                                         jobDescription,
-                                        AIResponseFormat,
+
                                     }: {
     jobTitle: string;
     jobDescription: string;
-    AIResponseFormat: string;
+
 }) =>
     `You are an expert in ATS (Applicant Tracking System) and resume analysis.
   Please analyze and rate this resume and suggest how to improve it.

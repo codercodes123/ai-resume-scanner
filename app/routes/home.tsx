@@ -2,18 +2,18 @@
 
 import type { Route } from "./+types/home";
 import Navbar from "~/components/Navbar";
-import { resumes } from "../../constants";
+
 import ResumeCard from "~/components/ResumeCard";
 import { usePuterStore } from "~/lib/putter";
-import { useLocation, useNavigate } from "react-router";
-import { useEffect } from "react";
+import { Link, useNavigate } from "react-router";
+import { useEffect, useState } from "react";
 
 
 import TextType from "~/components/TextType/TextType";
 import ClickSpark from "~/components/ClickSpark/ClickSpark";
 
 
-export function meta({}: Route.MetaArgs) {
+export function meta({ }: Route.MetaArgs) {
   return [
     { title: "HireNex" },
     {
@@ -26,7 +26,11 @@ export function meta({}: Route.MetaArgs) {
 export default function Home() {
 
   const store = usePuterStore();
+  const { auth, kv } = usePuterStore();
   const navigate = useNavigate();
+  const [resumes, setResumes] = useState<Resume[]>([]);
+  const [loadingResumes, setLoadingResumes] = useState(false);
+
 
   // Debug: Check what's in the store
   console.log("Store state:", store);
@@ -51,6 +55,27 @@ export default function Home() {
     }
   }, [store?.auth?.isAuthenticated, navigate]);
 
+  useEffect(() => {
+    const loadResumes = async () => {
+      setLoadingResumes(true);
+
+      const resumes = await kv.list('resume:*', true) as KVItem[];
+      const parsedResumes = resumes?.map((resume) => (
+        JSON.parse(resume.value) as Resume
+      ))
+
+
+
+      console.log(parsedResumes);
+      setResumes(parsedResumes || []);
+      setLoadingResumes(false)
+    }
+    loadResumes();
+
+  }, [])
+
+
+
   // Also fix the resumes bug:
   return (
     <main className="bg-[url('/images/bg-main.svg')] bg-cover">
@@ -61,12 +86,12 @@ export default function Home() {
         sparkCount={12}
         duration={400}
       >
-       
+
         {/* Hyperspeed background only in top section */}
         <div className="absolute -z-10"></div>
 
         <Navbar />
-        
+
         <section className="main-section ">
           <div className="page-heading text-center py-16">
             <h1>
@@ -78,22 +103,43 @@ export default function Home() {
                 cursorCharacter=""
               />
             </h1>
-            <h2 className="text-9xl font-bold">
-              Track Your Applications and Resume Ratings
-            </h2>
-            <h2 className="text-gradient"></h2>
+            {!loadingResumes && resumes?.length == 0 ? (
+              <h2 className="text-9xl font-bold">
+                No Resumes found. Upload your First resume to get Feedback.
+              </h2>
+            ) : (
+              <h2 className="text-9xl font-bold">
+                Review Your submission and check AI-Powered Industry Feedback
+              </h2>
+            )}
+
+            {loadingResumes && (
+              <div className="flex flex-col items-center justify-center">
+                <img src="/images/resume-scan-2.gif" className="w-[200px]" />
+              </div>
+            )}
           </div>
 
-          {resumes.length > 0 && ( // ✅ Fixed: 'resumes' not 'resume'
+          {!loadingResumes && resumes.length > 0 && ( // ✅ Fixed: 'resumes' not 'resume'
             <div className="resume-section grid grid-cols-3 gap-15">
               {resumes.map((resume) => (
                 <ResumeCard key={resume.id} resume={resume} />
               ))}
             </div>
           )}
-        </section>
 
-      </ClickSpark>
-    </main>
+         {!loadingResumes && resumes?.length==0 && (
+          <div className="flex flex-col items-center justify-center mt-10 gap-4">
+
+              <Link to="/upload" className="primary-button w-fit text-xl font-semibold">
+                Upload Resume
+              </Link>
+          </div>
+         )}
+      </section>
+
+
+    </ClickSpark>
+    </main >
   );
 }

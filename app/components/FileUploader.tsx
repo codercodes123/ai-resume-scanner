@@ -36,7 +36,7 @@ const FileUploader = ({onFileSelect}:FileUploaderProps) => {
 
                     {file?(
                         <div className="uploader-selected-file">
-                            <img  src="/images/pdf.png" alt="pdf" className="size-20"/>
+                            <img  src="/images/pdf.png" alt="pdf" className="w-20 h-20"/>
                                 <div className="flex items-center justify-center space-x-4">
                                     <div>
                                             <p className="text-sm text-gray-700 font-medium truncate max-w-xs">

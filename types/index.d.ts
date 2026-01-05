@@ -12,7 +12,7 @@ interface Resume {
     imagePath: string;
     resumePath: string;
     feedback: Feedback;
-}
+}                         
 
 interface Feedback {
     overallScore: number;

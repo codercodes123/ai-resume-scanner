@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import type { Feedback } from "../feedback";
 
 declare global {
     interface Window {
@@ -75,7 +76,7 @@ interface PuterStore {
         feedback: (
             path: string,
             message: string
-        ) => Promise<AIResponse | undefined>;
+        ) => Promise<Feedback | undefined>;
         img2txt: (
             image: string | File | Blob,
             testMode?: boolean
@@ -327,32 +328,109 @@ export const usePuterStore = create<PuterStore>((set, get) => {
         >;
     };
 
-    const feedback = async (path: string, message: string) => {
+    const feedback = async (
+        path: string,
+        message: string
+    ): Promise<Feedback | undefined> => {
         const puter = getPuter();
         if (!puter) {
             setError("Puter.js not available");
             return;
         }
 
-        return puter.ai.chat(
-            [
-                {
-                    role: "user",
-                    content: [
-                        {
-                            type: "file",
-                            puter_path: path,
-                        },
-                        {
-                            type: "text",
-                            text: message,
-                        },
-                    ],
-                },
-            ],
-            { model: "claude-3-7-sonnet" }
-        ) as Promise<AIResponse | undefined>;
+        let response: any;
+
+        try {
+            response = await puter.ai.chat(
+                [
+                    {
+                        role: "user",
+                        content: [
+                            { type: "file", puter_path: path },
+                            { type: "text", text: message },
+                        ],
+                    },
+                ],
+                { model: "gpt-4o-mini" }
+            );
+        } catch {
+            setError("AI request failed");
+            return;
+        }
+
+        console.log("Raw AI response:", response);
+
+        // Normalize AI response - handle BOTH formats:
+        // Format A: { message: { content: "JSON string" } }
+        // Format B: Direct Feedback object { overallScore, ATS, ... }
+        let parsed: any;
+
+        // Check if response is already a valid Feedback object (Format B)
+        if (
+            response &&
+            typeof response === "object" &&
+            typeof response.overallScore === "number" &&
+            response.ATS &&
+            response.toneAndStyle &&
+            response.content &&
+            response.structure &&
+            response.skills
+        ) {
+            // Response is already a parsed Feedback object
+            parsed = response;
+            console.log("AI returned direct Feedback object");
+        } 
+        // Check for Format A: { message: { content: "..." } }
+        else if (response?.message?.content) {
+            const raw = response.message.content;
+            console.log("AI returned message.content format");
+
+            if (typeof raw === "string") {
+                try {
+                    parsed = JSON.parse(raw);
+                } catch {
+                    setError("Failed to parse AI feedback JSON");
+                    return;
+                }
+            } else if (typeof raw === "object") {
+                // content might already be parsed
+                parsed = raw;
+            } else {
+                setError("Invalid AI response content type");
+                return;
+            }
+        } else {
+            console.error("Unrecognized AI response format:", response);
+            setError("Invalid AI response format");
+            return;
+        }
+
+        // Validate the parsed feedback has required shape
+        if (
+            typeof parsed.overallScore !== "number" ||
+            !parsed.ATS ||
+            !parsed.toneAndStyle ||
+            !parsed.content ||
+            !parsed.structure ||
+            !parsed.skills
+        ) {
+            console.error("AI feedback missing required fields:", parsed);
+            setError("AI feedback is incomplete or malformed");
+            return;
+        }
+
+        // Return normalized Feedback object
+        return {
+            overallScore: parsed.overallScore,
+            ATS: parsed.ATS,
+            toneAndStyle: parsed.toneAndStyle,
+            content: parsed.content,
+            structure: parsed.structure,
+            skills: parsed.skills,
+        };
     };
+
+
 
     const img2txt = async (image: string | File | Blob, testMode?: boolean) => {
         const puter = getPuter();
